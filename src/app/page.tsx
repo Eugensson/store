@@ -7,7 +7,7 @@ import { delay } from "@/lib/utils";
 import banner from "@/assets/banner.jpg";
 import { getWixClient } from "@/lib/wix-client.base";
 
-import { Product } from "@/components/Product";
+import { Product } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -77,6 +77,7 @@ const FeaturedProducts = async () => {
           </li>
         ))}
       </ul>
+      <pre>{JSON.stringify(featuredProducts, null, 2)}</pre>
     </div>
   );
 };

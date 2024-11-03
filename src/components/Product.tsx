@@ -1,7 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import { products } from "@wix/stores";
-import { media as wixMedia } from "@wix/sdk";
+
+import { Badge } from "@/components/ui/badge";
+import { WixImage } from "@/components/wix-image";
+import { DiscountBadge } from "@/components/discount-badge";
+
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductProps {
   product: products.Product;
@@ -10,20 +14,23 @@ interface ProductProps {
 export const Product = ({ product }: ProductProps) => {
   const mainImage = product.media?.mainMedia?.image;
 
-  const resizedImageUrl = mainImage?.url
-    ? wixMedia.getScaledToFitImageUrl(mainImage.url, 700, 700, {})
-    : null;
-
   return (
-    <Link href={`/products/${product.slug}`} className="border h-full">
-      <div className="overflow-hidden">
-        <Image
-          src={resizedImageUrl || "/placeholder.png"}
-          alt={mainImage?.altText || "Product Image"}
+    <Link href={`/products/${product.slug}`} className="border h-full bg-card">
+      <div className="relative overflow-hidden">
+        <WixImage
+          mediaIdentifier={mainImage?.url}
           width={700}
           height={700}
+          alt={mainImage?.altText}
           className="transition-transform duration-300 hover:scale-105"
         />
+        <div className="absolute bottom-4 right-4 flex flex-wrap items-center gap-2">
+          {product.ribbon && <Badge>{product.ribbon}</Badge>}
+          {product.discount && <DiscountBadge data={product.discount} />}
+          <Badge className="bg-secondary text-secondary-foreground font-semibold">
+            {getFormattedPrice(product)}
+          </Badge>
+        </div>
       </div>
 
       <div className="space-y-3 p-3">
@@ -35,4 +42,19 @@ export const Product = ({ product }: ProductProps) => {
       </div>
     </Link>
   );
+};
+
+export const getFormattedPrice = (product: products.Product) => {
+  const minPrice = product.priceRange?.minValue;
+  const maxPrice = product.priceRange?.maxValue;
+
+  if (minPrice || maxPrice || minPrice !== maxPrice) {
+    return `from ${formatCurrency(minPrice, product.priceData?.currency)}`;
+  } else {
+    return (
+      product.priceData?.formatted?.discountedPrice ||
+      product.priceData?.formatted?.price ||
+      "n/a"
+    );
+  }
 };
