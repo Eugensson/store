@@ -3,13 +3,15 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
 
-import { delay } from "@/lib/utils";
-import banner from "@/assets/banner.jpg";
-import { getWixClient } from "@/lib/wix-client.base";
-
 import { Product } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import { queryProducts } from "@/wix-api/products";
+import { getCollectionBySlug } from "@/wix-api/collections";
+
+import { delay } from "@/lib/utils";
+import banner from "@/assets/banner.jpg";
 
 const HomePage = () => {
   return (
@@ -51,19 +53,13 @@ export default HomePage;
 const FeaturedProducts = async () => {
   await delay(1000);
 
-  const wixClient = getWixClient();
-
-  const { collection } = await wixClient.collections.getCollectionBySlug(
-    "feature-products"
-  );
+  const collection = await getCollectionBySlug("feature-products");
 
   if (!collection?._id) return null;
 
-  const featuredProducts = await wixClient.products
-    .queryProducts()
-    .hasSome("collectionIds", [collection?._id])
-    .descending("lastUpdated")
-    .find();
+  const featuredProducts = await queryProducts({
+    collectionIds: collection?._id,
+  });
 
   if (!featuredProducts.items.length) return null;
 
@@ -77,7 +73,6 @@ const FeaturedProducts = async () => {
           </li>
         ))}
       </ul>
-      <pre>{JSON.stringify(featuredProducts, null, 2)}</pre>
     </div>
   );
 };
