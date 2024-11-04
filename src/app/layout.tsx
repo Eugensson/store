@@ -3,6 +3,8 @@ import { Lora } from "next/font/google";
 
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
+import { ReactQueryProvider } from "@/app/react-query-provider";
 
 import "./globals.css";
 
@@ -24,9 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={lora.className}>
-        <Navbar />
-        {children}
-        <Footer />
+        <ReactQueryProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </ReactQueryProvider>
+        <Toaster />
       </body>
     </html>
   );
