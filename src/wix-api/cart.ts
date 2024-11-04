@@ -2,11 +2,9 @@ import { products } from "@wix/stores";
 
 import { findVariant } from "@/lib/utils";
 import { WIX_STORE_APP_ID } from "@/lib/constants";
-import { getWixClient } from "@/lib/wix-client.base";
+import { WixClient } from "@/lib/wix-client.base";
 
-export const getCart = async () => {
-  const wixClient = getWixClient();
-
+export const getCart = async (wixClient: WixClient) => {
   try {
     return await wixClient.currentCart.getCurrentCart();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,13 +23,10 @@ interface AddToCartValuesProps {
   quantity: number;
 }
 
-export const addToCart = async ({
-  product,
-  selectedOptions,
-  quantity,
-}: AddToCartValuesProps) => {
-  const wixClient = getWixClient();
-
+export const addToCart = async (
+  wixClient: WixClient,
+  { product, selectedOptions, quantity }: AddToCartValuesProps
+) => {
   const selectedVariant = findVariant(product, selectedOptions);
 
   return wixClient.currentCart.addToCurrentCart({

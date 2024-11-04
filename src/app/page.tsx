@@ -12,6 +12,7 @@ import { getCollectionBySlug } from "@/wix-api/collections";
 
 import { delay } from "@/lib/utils";
 import banner from "@/assets/banner.jpg";
+import { getWixServerClient } from "@/lib/wix-client.server";
 
 const HomePage = () => {
   return (
@@ -53,11 +54,13 @@ export default HomePage;
 const FeaturedProducts = async () => {
   await delay(1000);
 
-  const collection = await getCollectionBySlug("featured-products");
+  const wixClient = await getWixServerClient();
+
+  const collection = await getCollectionBySlug(wixClient, "featured-products");
 
   if (!collection?._id) return null;
 
-  const featuredProducts = await queryProducts({
+  const featuredProducts = await queryProducts(wixClient, {
     collectionIds: collection?._id,
   });
 

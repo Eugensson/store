@@ -10,11 +10,11 @@ import { members } from "@wix/members";
 import { reviews } from "@wix/reviews";
 import { redirects } from "@wix/redirects";
 import { products, collections } from "@wix/stores";
-import { createClient, OAuthStrategy } from "@wix/sdk";
+import { createClient, OAuthStrategy, Tokens } from "@wix/sdk";
 
 import { env } from "@/env";
 
-export const getWixClient = () => {
+export const getWixClient = (tokens: Tokens | undefined) => {
   return createClient({
     modules: {
       files,
@@ -31,6 +31,9 @@ export const getWixClient = () => {
     },
     auth: OAuthStrategy({
       clientId: env.NEXT_PUBLIC_WIX_CLIENT_ID,
+      tokens,
     }),
   });
 };
+
+export type WixClient = ReturnType<typeof getWixClient>;
