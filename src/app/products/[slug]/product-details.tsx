@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 import { ProductMedia } from "@/app/products/[slug]/product-media";
 import { ProductPrice } from "@/app/products/[slug]/product-price";
@@ -84,8 +85,6 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
           selectedOptions={selectedOptions}
           setSelectedOptions={setSelectedOptions}
         />
-        <div>Selected Options: {JSON.stringify(selectedOptions)}</div>
-        <div>Variant: {JSON.stringify(selectedVariant?.choices)}</div>
         <div className="space-y-1.5">
           <Label htmlFor="quantity">Quantity</Label>
           <div className="flex items-center gap-2.5">
@@ -106,6 +105,15 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
               )}
           </div>
         </div>
+        {inStock ? (
+          <AddToCartButton
+            product={product}
+            selectedOptions={selectedOptions}
+            quantity={quantity}
+          />
+        ) : (
+          "Out of stock"
+        )}
         {!!product.additionalInfoSections?.length && (
           <div className="space-y-1.5 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
