@@ -81,7 +81,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [TailwindcssAnimate],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plugins: [TailwindcssAnimate, require("@tailwindcss/typography")],
 };
 
 export default config;

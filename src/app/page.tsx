@@ -53,7 +53,7 @@ export default HomePage;
 const FeaturedProducts = async () => {
   await delay(1000);
 
-  const collection = await getCollectionBySlug("feature-products");
+  const collection = await getCollectionBySlug("featured-products");
 
   if (!collection?._id) return null;
 
