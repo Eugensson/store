@@ -44,3 +44,40 @@ export const addToCart = async (
     ],
   });
 };
+
+export interface UpdateCartItemQuantityValues {
+  productId: string;
+  newQuantity: number;
+}
+
+export const updateCartItemQuantity = async (
+  wixClient: WixClient,
+  { productId, newQuantity }: UpdateCartItemQuantityValues
+) => {
+  return wixClient.currentCart.updateCurrentCartLineItemQuantity([
+    {
+      _id: productId,
+      quantity: newQuantity,
+    },
+  ]);
+};
+
+export const removeCartItem = async (
+  wixClient: WixClient,
+  productId: string
+) => {
+  return wixClient.currentCart.removeLineItemsFromCurrentCart([productId]);
+};
+
+export const clearCart = async (wixClient: WixClient) => {
+  try {
+    return await wixClient.currentCart.deleteCurrentCart();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.details.applicationError.code === "OWNED_CART_NOT_FOUND") {
+      return;
+    } else {
+      throw error;
+    }
+  }
+};

@@ -1,15 +1,24 @@
-import { currentCart } from "@wix/ecom";
 import {
+  MutationKey,
   QueryKey,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { currentCart } from "@wix/ecom";
 
 import { useToast } from "@/hooks/use-toast";
 
+import {
+  addToCart,
+  AddToCartValues,
+  clearCart,
+  getCart,
+  removeCartItem,
+  updateCartItemQuantity,
+  UpdateCartItemQuantityValues,
+} from "@/wix-api/cart";
 import { wixBrowserClient } from "@/lib/wix-client.browser";
-import { addToCart, AddToCartValues, getCart } from "@/wix-api/cart";
 
 const queryKey: QueryKey = ["cart"];
 
@@ -41,5 +50,99 @@ export const useAddItemToCart = () => {
       });
       console.error(error);
     },
+  });
+};
+
+export const useUpdateCartItemQuantity = () => {
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast();
+
+  const mutationKey: MutationKey = ["updateCartItemQuantity"];
+
+  return useMutation({
+    mutationKey,
+    mutationFn: (values: UpdateCartItemQuantityValues) =>
+      updateCartItemQuantity(wixBrowserClient, values),
+    onMutate: async ({ productId, newQuantity }) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousState =
+        queryClient.getQueryData<currentCart.Cart>(queryKey);
+
+      queryClient.setQueryData<currentCart.Cart>(queryKey, (oldData) => ({
+        ...oldData,
+        lineItems: oldData?.lineItems?.map((lineItem) =>
+          lineItem._id === productId
+            ? { ...lineItem, quantity: newQuantity }
+            : lineItem
+        ),
+      }));
+
+      return { previousState };
+    },
+    onError: (error, _variables, context) => {
+      queryClient.setQueryData(queryKey, context?.previousState);
+      toast({
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+      console.error(error);
+    },
+    onSettled() {
+      if (queryClient.isMutating({ mutationKey }) === 1) {
+        queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+};
+
+export const useRemoveCartItem = () => {
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: (productId: string) =>
+      removeCartItem(wixBrowserClient, productId),
+    onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousState =
+        queryClient.getQueryData<currentCart.Cart>(queryKey);
+
+      queryClient.setQueryData<currentCart.Cart>(queryKey, (oldData) => ({
+        ...oldData,
+        lineItems: oldData?.lineItems?.filter(
+          (lineItem) => lineItem._id !== productId
+        ),
+      }));
+
+      return { previousState };
+    },
+    onError(error, _variables, context) {
+      queryClient.setQueryData(queryKey, context?.previousState);
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong. Please try again.",
+      });
+    },
+    onSettled() {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+};
+
+export const useClearCart = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => clearCart(wixBrowserClient),
+    onSuccess() {
+      queryClient.setQueryData(queryKey, null);
+      queryClient.invalidateQueries({ queryKey });
+    },
+    retry: 3,
   });
 };
