@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { BackInStockNotificationButton } from "@/components/back-in-stock-notification-button";
 
 import { ProductMedia } from "@/app/products/[slug]/product-media";
 import { ProductPrice } from "@/app/products/[slug]/product-price";
@@ -114,7 +115,11 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
             className="w-full"
           />
         ) : (
-          "Out of stock"
+          <BackInStockNotificationButton
+            product={product}
+            selectedOptions={selectedOptions}
+            className="w-full"
+          />
         )}
         {!!product.additionalInfoSections?.length && (
           <div className="space-y-1.5 text-sm text-muted-foreground">

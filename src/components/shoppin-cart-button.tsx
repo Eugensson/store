@@ -1,8 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import { currentCart } from "@wix/ecom";
 import {
   Loader,
   MinusIcon,
@@ -10,6 +7,9 @@ import {
   ShoppingCartIcon,
   XIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { currentCart } from "@wix/ecom";
 
 import {
   Sheet,
