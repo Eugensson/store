@@ -11,6 +11,7 @@ import { getLoggedInMember } from "@/wix-api/members";
 import { getCollections } from "@/wix-api/collections";
 
 import { getWixServerClient } from "@/lib/wix-client.server";
+import { SearchFild } from "./search-fild";
 
 export const Navbar = async () => {
   const wixClient = await getWixServerClient();
@@ -31,6 +32,7 @@ export const Navbar = async () => {
           </Link>
           <MainNavigation collections={collections} />
         </div>
+        <SearchFild className="max-w-96" />
         <div className="flex items-center gap-x-4">
           <UserButton loggedInMember={loggedInMember} />
           <ShoppinCartButton initialData={cart} />

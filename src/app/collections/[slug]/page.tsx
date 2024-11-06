@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 
 import { Product } from "@/components/product";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PaginationBar } from "@/components/pagination-bar";
 
 import { queryProducts } from "@/wix-api/products";
 import { getCollectionBySlug } from "@/wix-api/collections";
 
 import { delay } from "@/lib/utils";
+import { PAGE_SIZE } from "@/lib/constants";
 import { getWixServerClient } from "@/lib/wix-client.server";
-import { PaginationBar } from "@/components/pagination-bar";
 
 interface CollectionPageProps {
   params: { slug: string };
@@ -45,7 +46,7 @@ const CollectionPage = async ({
   searchParams,
 }: CollectionPageProps) => {
   const { slug } = await params;
-  const { page = "1" } = searchParams;
+  const { page = "1" } = await searchParams;
 
   const wixServerClient = await getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
@@ -72,8 +73,6 @@ interface ProductsProps {
 const Products = async ({ collectionId, page }: ProductsProps) => {
   await delay(2000);
 
-  const PAGE_SIZE = 8;
-
   const wixServerClient = await getWixServerClient();
 
   const collectionProducts = await queryProducts(wixServerClient, {
@@ -87,7 +86,7 @@ const Products = async ({ collectionId, page }: ProductsProps) => {
   if (page > (collectionProducts.totalPages || 1)) notFound();
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8">
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {collectionProducts.items.map((product) => (
           <li key={product._id}>
@@ -106,7 +105,7 @@ const Products = async ({ collectionId, page }: ProductsProps) => {
 const LoadingSkeleton = () => {
   return (
     <div className="flex grid-cols-2 flex-col gap-5 sm:grid md:grid-cols-3 lg:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, i) => (
+      {Array.from({ length: PAGE_SIZE }).map((_, i) => (
         <Skeleton key={i} className="h-[26rem] w-full" />
       ))}
     </div>

@@ -5,6 +5,7 @@ import { WixClient } from "@/lib/wix-client.base";
 type ProductSort = "last_updated" | "price_asc" | "price_desc";
 
 interface QueryProductsFilters {
+  q?: string;
   collectionIds?: string[] | string;
   sort?: ProductSort;
   skip?: number;
@@ -14,6 +15,7 @@ interface QueryProductsFilters {
 export const queryProducts = async (
   wixClient: WixClient,
   {
+    q,
     collectionIds,
     sort = "last_updated",
     skip = 0,
@@ -21,6 +23,10 @@ export const queryProducts = async (
   }: QueryProductsFilters
 ) => {
   let query = wixClient.products.queryProducts();
+
+  if (q) {
+    query = query.startsWith("name", q);
+  }
 
   const collectionIdsArray = collectionIds
     ? Array.isArray(collectionIds)
