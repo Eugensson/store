@@ -4,14 +4,21 @@ import { WixClient } from "@/lib/wix-client.base";
 
 type ProductSort = "last_updated" | "price_asc" | "price_desc";
 
-interface QueryProductsFiltersParams {
+interface QueryProductsFilters {
   collectionIds?: string[] | string;
   sort?: ProductSort;
+  skip?: number;
+  limit?: number;
 }
 
 export const queryProducts = async (
   wixClient: WixClient,
-  { collectionIds, sort = "last_updated" }: QueryProductsFiltersParams
+  {
+    collectionIds,
+    sort = "last_updated",
+    skip = 0,
+    limit = 10,
+  }: QueryProductsFilters
 ) => {
   let query = wixClient.products.queryProducts();
 
@@ -36,6 +43,9 @@ export const queryProducts = async (
       query = query.descending("lastUpdated");
       break;
   }
+
+  if (limit) query = query.limit(limit);
+  if (skip) query = query.skip(skip);
 
   return await query.find();
 };

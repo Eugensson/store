@@ -10,17 +10,20 @@ import { getCollectionBySlug } from "@/wix-api/collections";
 
 import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
+import { PaginationBar } from "@/components/pagination-bar";
 
 interface CollectionPageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
+  searchParams: { page?: string };
 }
 
 export const generateMetadata = async ({
   params,
-}: CollectionPageProps): Promise<Metadata> => {
+}: {
+  params: { slug: string };
+}): Promise<Metadata> => {
   const { slug } = await params;
+
   const wixServerClient = await getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
 
@@ -37,8 +40,13 @@ export const generateMetadata = async ({
   };
 };
 
-const CollectionPage = async ({ params }: CollectionPageProps) => {
+const CollectionPage = async ({
+  params,
+  searchParams,
+}: CollectionPageProps) => {
   const { slug } = await params;
+  const { page = "1" } = searchParams;
+
   const wixServerClient = await getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
 
@@ -47,8 +55,8 @@ const CollectionPage = async ({ params }: CollectionPageProps) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Products</h2>
-      <Suspense fallback={<LoadingSkeleton />}>
-        <Products collectionId={collection._id} />
+      <Suspense fallback={<LoadingSkeleton />} key={page}>
+        <Products collectionId={collection._id} page={parseInt(page)} />
       </Suspense>
     </div>
   );
@@ -58,27 +66,40 @@ export default CollectionPage;
 
 interface ProductsProps {
   collectionId: string;
+  page: number;
 }
 
-const Products = async ({ collectionId }: ProductsProps) => {
+const Products = async ({ collectionId, page }: ProductsProps) => {
   await delay(2000);
+
+  const PAGE_SIZE = 8;
 
   const wixServerClient = await getWixServerClient();
 
   const collectionProducts = await queryProducts(wixServerClient, {
     collectionIds: collectionId,
+    limit: PAGE_SIZE,
+    skip: (page - 1) * PAGE_SIZE,
   });
 
   if (!collectionProducts.length) notFound();
 
+  if (page > (collectionProducts.totalPages || 1)) notFound();
+
   return (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {collectionProducts.items.map((product) => (
-        <li key={product._id}>
-          <Product product={product} />
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-12">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {collectionProducts.items.map((product) => (
+          <li key={product._id}>
+            <Product product={product} />
+          </li>
+        ))}
+      </ul>
+      <PaginationBar
+        currentPage={page}
+        totalPages={collectionProducts.totalPages || 1}
+      />
+    </div>
   );
 };
 
