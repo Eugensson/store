@@ -6,14 +6,21 @@ import { Product } from "@/components/product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PaginationBar } from "@/components/pagination-bar";
 
-import { queryProducts } from "@/wix-api/products";
+import { ProductSort, queryProducts } from "@/wix-api/products";
 
 import { delay } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
 interface ShopPageProps {
-  searchParams: { q?: string; page?: string };
+  searchParams: {
+    q?: string;
+    page?: string;
+    collection?: string[];
+    price_min?: string;
+    price_max?: string;
+    sort?: string;
+  };
 }
 
 export const generateMetadata = ({
@@ -24,24 +31,32 @@ export const generateMetadata = ({
   };
 };
 
-const ShopPage = async ({ searchParams: { q, page = "1" } }: ShopPageProps) => {
+const ShopPage = async ({
+  searchParams: {
+    q,
+    page = "1",
+    collection: collectionIds,
+    price_min,
+    price_max,
+    sort,
+  },
+}: ShopPageProps) => {
   const title = q ? `Results for "${q}"` : "Products";
 
   return (
-    <main className="flex flex-col justify-center items-center gap-8 px-4 py-8 lg:flex-row lg:items-start">
-      <div>filter sidebar</div>
-      <div className="w-full max-w-7xl space-y-4">
-        <div className="flex justify-center lg:justify-end">sort filter</div>
-        <div className="space-y-8">
-          <h1 className="text-center text-3xl md:text-4xl font-bold">
-            {title}
-          </h1>
-          <Suspense fallback={<LoadingSkeleton />} key={`${q}-${page}`}>
-            <ProductResults q={q} page={parseInt(page)} />
-          </Suspense>
-        </div>
-      </div>
-    </main>
+    <div className="space-y-8">
+      <h1 className="text-center text-3xl md:text-4xl font-bold">{title}</h1>
+      <Suspense fallback={<LoadingSkeleton />} key={`${q}-${page}`}>
+        <ProductResults
+          q={q}
+          page={parseInt(page)}
+          collectionIds={collectionIds}
+          priceMin={price_min ? parseInt(price_min) : undefined}
+          priceMax={price_max ? parseInt(price_max) : undefined}
+          sort={sort as ProductSort}
+        />
+      </Suspense>
+    </div>
   );
 };
 
@@ -50,9 +65,20 @@ export default ShopPage;
 interface ProductResultsProps {
   q?: string;
   page: number;
+  collectionIds?: string[];
+  priceMin?: number;
+  priceMax?: number;
+  sort?: ProductSort;
 }
 
-const ProductResults = async ({ q, page }: ProductResultsProps) => {
+const ProductResults = async ({
+  q,
+  page,
+  collectionIds,
+  priceMin,
+  priceMax,
+  sort,
+}: ProductResultsProps) => {
   await delay(1000);
 
   const wixServerClient = await getWixServerClient();
@@ -61,12 +87,16 @@ const ProductResults = async ({ q, page }: ProductResultsProps) => {
     q,
     limit: PAGE_SIZE,
     skip: (page - 1) * PAGE_SIZE,
+    collectionIds,
+    priceMin,
+    priceMax,
+    sort,
   });
 
   if (page > (products.totalPages || 1)) notFound();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 group-has-[[data-pending]]:animate-pulse">
       <p className="text-center text-xl">
         {products.totalCount}{" "}
         {products.totalCount === 1 ? "product" : "products"} found
