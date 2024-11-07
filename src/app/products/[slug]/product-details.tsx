@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { BuyNowButton } from "@/components/buy-now-button";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { BackInStockNotificationButton } from "@/components/back-in-stock-notification-button";
 
@@ -107,13 +108,21 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
           </div>
         </div>
         {inStock ? (
-          <AddToCartButton
-            product={product}
-            selectedOptions={selectedOptions}
-            quantity={quantity}
-            disabled={avalibleQuantityExceeded || quantity < 1}
-            className="w-full"
-          />
+          <div className="flex items-center gap-2.5">
+            <AddToCartButton
+              product={product}
+              selectedOptions={selectedOptions}
+              quantity={quantity}
+              disabled={avalibleQuantityExceeded || quantity < 1}
+              className="w-full"
+            />
+            <BuyNowButton
+              product={product}
+              selectedOptions={selectedOptions}
+              quantity={quantity}
+              disabled={avalibleQuantityExceeded || quantity < 1}
+            />
+          </div>
         ) : (
           <BackInStockNotificationButton
             product={product}
