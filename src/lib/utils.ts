@@ -1,6 +1,11 @@
 import { products } from "@wix/stores";
 import { twMerge } from "tailwind-merge";
 import { clsx, type ClassValue } from "clsx";
+import resolveConfig from "tailwindcss/resolveConfig";
+
+import tailwindConfig from "../../tailwind.config";
+
+export const twConfig = resolveConfig(tailwindConfig);
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
