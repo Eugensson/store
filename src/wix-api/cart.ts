@@ -1,7 +1,7 @@
 import { products } from "@wix/stores";
 
 import { findVariant } from "@/lib/utils";
-import { WIX_STORE_APP_ID } from "@/lib/constants";
+import { WIX_STORES_APP_ID } from "@/lib/constants";
 import { WixClient } from "@/lib/wix-client.base";
 
 export const getCart = async (wixClient: WixClient) => {
@@ -33,7 +33,7 @@ export const addToCart = async (
     lineItems: [
       {
         catalogReference: {
-          appId: WIX_STORE_APP_ID,
+          appId: WIX_STORES_APP_ID,
           catalogItemId: product._id,
           options: selectedVariant
             ? { variantId: selectedVariant._id }

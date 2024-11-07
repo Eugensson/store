@@ -22,7 +22,7 @@ import { WixImage } from "@/components/wix-image";
 
 import {
   useCart,
-  //   useClearCart,
+  useClearCart,
   useRemoveCartItem,
   useUpdateCartItemQuantity,
 } from "@/hooks/cart";
@@ -102,6 +102,7 @@ export const ShoppinCartButton = ({ initialData }: ShoppinCartButtonProps) => {
             <div className="space-y-0.5">
               <p className="text-sm">Subtotal amount:</p>
               <p className="font-bold">
+                {/* @ts-expect-error */}
                 {cartQuery.data?.subtotal?.formattedConvertedAmount}
               </p>
               <p className="text-xs text-muted-foreground">
@@ -130,7 +131,7 @@ const ShoppingCartItem = ({
 }: ShoppinCartItemProps) => {
   const updateQuantityMutation = useUpdateCartItemQuantity();
   const removeItemMutation = useRemoveCartItem();
-  //   const clearCartMutation = useClearCart();
+  const clearCartMutation = useClearCart();
 
   const productId = item._id;
 
