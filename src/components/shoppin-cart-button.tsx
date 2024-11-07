@@ -26,6 +26,7 @@ import {
   useRemoveCartItem,
   useUpdateCartItemQuantity,
 } from "@/hooks/cart";
+import { CheckoutButton } from "./checkout-button";
 
 interface ShoppinCartButtonProps {
   initialData: currentCart.Cart | null;
@@ -107,9 +108,10 @@ export const ShoppinCartButton = ({ initialData }: ShoppinCartButtonProps) => {
                 Shipping and taxes are calculated at checkout
               </p>
             </div>
-            <Button size="lg" disabled={!totalQuantity || cartQuery.isFetching}>
-              Checkout
-            </Button>
+            <CheckoutButton
+              size="lg"
+              disabled={!totalQuantity || cartQuery.isFetching}
+            />
           </div>
         </SheetContent>
       </Sheet>
