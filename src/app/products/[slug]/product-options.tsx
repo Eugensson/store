@@ -1,6 +1,7 @@
 import { products } from "@wix/stores";
 
 import { Label } from "@/components/ui/label";
+
 import { checkInStock, cn } from "@/lib/utils";
 
 interface ProductOptionsProps {

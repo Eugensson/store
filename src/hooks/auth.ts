@@ -2,8 +2,10 @@ import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 
 import { useToast } from "@/hooks/use-toast";
+
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 import { WIX_OAUTH_DATA_COOKIE, WIX_SESSION_COOKIE } from "@/lib/constants";
+
 import { generateOAuthData, getLoginUrl, getLogoutUrl } from "@/wix-api/auth";
 
 export const useAuth = () => {

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
 
+import banner from "@/assets/banner.jpg";
 import { Product } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +12,6 @@ import { queryProducts } from "@/wix-api/products";
 import { getCollectionBySlug } from "@/wix-api/collections";
 
 import { delay } from "@/lib/utils";
-import banner from "@/assets/banner.jpg";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
 const HomePage = () => {

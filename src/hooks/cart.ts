@@ -18,6 +18,7 @@ import {
   updateCartItemQuantity,
   UpdateCartItemQuantityValues,
 } from "@/wix-api/cart";
+
 import { wixBrowserClient } from "@/lib/wix-client.browser";
 
 const queryKey: QueryKey = ["cart"];

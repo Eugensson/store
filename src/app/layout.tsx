@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
+
 import { ReactQueryProvider } from "@/app/react-query-provider";
 
 import "./globals.css";

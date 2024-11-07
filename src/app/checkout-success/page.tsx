@@ -19,10 +19,8 @@ interface CheckoutSuccessPageProps {
 }
 
 const CheckoutSuccessPage = async ({
-  searchParams,
+  searchParams: { orderId },
 }: CheckoutSuccessPageProps) => {
-  const { orderId } = await searchParams;
-
   const wixClient = await getWixServerClient();
 
   const [order, loggedInMember] = await Promise.all([

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 import TailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
@@ -81,8 +82,8 @@ const config: Config = {
       },
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [TailwindcssAnimate, require("@tailwindcss/typography")],
+
+  plugins: [TailwindcssAnimate, typography],
 };
 
 export default config;

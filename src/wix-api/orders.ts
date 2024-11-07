@@ -12,3 +12,22 @@ export const getOrder = async (wixClient: WixClient, orderId: string) => {
     }
   }
 };
+
+export interface GetUserOrderFilters {
+  limit?: number;
+  cursor?: string | null;
+}
+
+export const getUserOrders = async (
+  wixClient: WixClient,
+  { limit, cursor }: GetUserOrderFilters
+) => {
+  return wixClient.orders.searchOrders({
+    search: {
+      cursorPaging: {
+        limit,
+        cursor,
+      },
+    },
+  });
+};

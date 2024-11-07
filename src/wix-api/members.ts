@@ -28,9 +28,7 @@ export const updateMemberInfo = async (
 ) => {
   const loggedInMember = await getLoggedInMember(wixClient);
 
-  if (!loggedInMember?._id) {
-    throw Error("No member ID found");
-  }
+  if (!loggedInMember?._id) throw Error("No member Id found");
 
   return wixClient.members.updateMember(loggedInMember._id, {
     contact: {

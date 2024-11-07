@@ -2,7 +2,9 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
 import { useToast } from "@/hooks/use-toast";
+
 import { wixBrowserClient } from "@/lib/wix-client.browser";
+
 import { updateMemberInfo, UpdateMemberInfoValues } from "@/wix-api/members";
 
 export const useUpdateMember = () => {

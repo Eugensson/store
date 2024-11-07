@@ -2,8 +2,8 @@ import { OauthData } from "@wix/sdk";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-import { WIX_OAUTH_DATA_COOKIE, WIX_SESSION_COOKIE } from "@/lib/constants";
 import { getWixServerClient } from "@/lib/wix-client.server";
+import { WIX_OAUTH_DATA_COOKIE, WIX_SESSION_COOKIE } from "@/lib/constants";
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
