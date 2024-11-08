@@ -11,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { queryProducts } from "@/wix-api/products";
 import { getCollectionBySlug } from "@/wix-api/collections";
 
-import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
 const HomePage = () => {
@@ -52,8 +51,6 @@ const HomePage = () => {
 export default HomePage;
 
 const FeaturedProducts = async () => {
-  await delay(1000);
-
   const wixClient = await getWixServerClient();
 
   const collection = await getCollectionBySlug(wixClient, "featured-products");

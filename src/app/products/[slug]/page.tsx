@@ -13,7 +13,6 @@ import {
 } from "@/app/products/[slug]/product-reviews";
 import { ProductDetails } from "@/app/products/[slug]/product-details";
 
-import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
 import { getLoggedInMember } from "@/wix-api/members";
@@ -58,7 +57,7 @@ export const generateMetadata = async ({
 const ProductDetailsPage = async ({
   params: { slug },
 }: ProductDetailsPageProps) => {
-  const wixServerClient = await getWixServerClient();
+  const wixServerClient = getWixServerClient();
 
   const product = await getProductBySlug(wixServerClient, slug);
 
@@ -89,9 +88,7 @@ interface RelatedProductsPageProps {
 }
 
 const RelatedProducts = async ({ productId }: RelatedProductsPageProps) => {
-  await delay(2000);
-
-  const wixServerClient = await getWixServerClient();
+  const wixServerClient = getWixServerClient();
 
   const relatedProducts = await getRelatedProducts(wixServerClient, productId);
 

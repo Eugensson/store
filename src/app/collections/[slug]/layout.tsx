@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { WixImage } from "@/components/wix-image";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { cn, delay } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { getCollectionBySlug } from "@/wix-api/collections";
 
@@ -27,10 +27,11 @@ const Layout = ({ children, params }: LayoutProps) => {
 
 export default Layout;
 
-const CollectionsLayout = async ({ children, params }: LayoutProps) => {
-  await delay(2000);
-  const { slug } = await params;
-  const serverClient = await getWixServerClient();
+const CollectionsLayout = async ({
+  children,
+  params: { slug },
+}: LayoutProps) => {
+  const serverClient = getWixServerClient();
   const collection = await getCollectionBySlug(serverClient, slug);
 
   if (!collection) notFound();

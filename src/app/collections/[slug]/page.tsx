@@ -9,7 +9,6 @@ import { PaginationBar } from "@/components/pagination-bar";
 import { queryProducts } from "@/wix-api/products";
 import { getCollectionBySlug } from "@/wix-api/collections";
 
-import { delay } from "@/lib/utils";
 import { PAGE_SIZE } from "@/lib/constants";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
@@ -23,7 +22,7 @@ export const generateMetadata = async ({
 }: {
   params: { slug: string };
 }): Promise<Metadata> => {
-  const wixServerClient = await getWixServerClient();
+  const wixServerClient = getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
 
   if (!collection) notFound();
@@ -66,9 +65,7 @@ interface ProductsProps {
 }
 
 const Products = async ({ collectionId, page }: ProductsProps) => {
-  await delay(2000);
-
-  const wixServerClient = await getWixServerClient();
+  const wixServerClient = getWixServerClient();
 
   const collectionProducts = await queryProducts(wixServerClient, {
     collectionIds: collectionId,
