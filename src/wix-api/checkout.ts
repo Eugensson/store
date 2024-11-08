@@ -5,7 +5,7 @@ import { env } from "@/env";
 
 import { findVariant } from "@/lib/utils";
 import { WixClient } from "@/lib/wix-client.base";
-import { WIX_STORE_APP_ID } from "@/lib/constants";
+import { WIX_STORES_APP_ID } from "@/lib/constants";
 
 export const getCheckoutUrlFromCurrentCart = async (wixClient: WixClient) => {
   const { checkoutId } =
@@ -43,7 +43,7 @@ export const getCheckoutUrlForProduct = async (
     lineItems: [
       {
         catalogReference: {
-          appId: WIX_STORE_APP_ID,
+          appId: WIX_STORES_APP_ID,
           catalogItemId: product._id,
           options: selectedVariant
             ? { variantId: selectedVariant._id }

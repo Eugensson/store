@@ -19,12 +19,10 @@ interface CollectionPageProps {
 }
 
 export const generateMetadata = async ({
-  params,
+  params: { slug },
 }: {
   params: { slug: string };
 }): Promise<Metadata> => {
-  const { slug } = await params;
-
   const wixServerClient = await getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
 
@@ -42,12 +40,9 @@ export const generateMetadata = async ({
 };
 
 const CollectionPage = async ({
-  params,
-  searchParams,
+  params: { slug },
+  searchParams: { page = "1" },
 }: CollectionPageProps) => {
-  const { slug } = await params;
-  const { page = "1" } = await searchParams;
-
   const wixServerClient = await getWixServerClient();
   const collection = await getCollectionBySlug(wixServerClient, slug);
 

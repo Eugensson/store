@@ -1,17 +1,19 @@
 import { cache } from "react";
-import { Tokens } from "@wix/sdk";
+import { files } from "@wix/media";
 import { cookies } from "next/headers";
+import { ApiKeyStrategy, createClient, Tokens } from "@wix/sdk";
 
-import { getWixClient } from "@/lib/wix-client.base";
+import { env } from "@/env";
+
 import { WIX_SESSION_COOKIE } from "@/lib/constants";
 
-export const getWixServerClient = cache(async () => {
+import { getWixClient } from "@/lib/wix-client.base";
+
+export const getWixServerClient = cache(() => {
   let tokens: Tokens | undefined;
 
   try {
-    tokens = JSON.parse(
-      (await cookies()).get(WIX_SESSION_COOKIE)?.value || "{}"
-    );
+    tokens = JSON.parse(cookies().get(WIX_SESSION_COOKIE)?.value || "{}");
   } catch (error) {
     console.error(error);
   }
@@ -19,4 +21,16 @@ export const getWixServerClient = cache(async () => {
   return getWixClient(tokens);
 });
 
-export const wixServerClient = getWixServerClient();
+export const getWixAdminClient = cache(async () => {
+  const wixClient = createClient({
+    modules: {
+      files,
+    },
+    auth: ApiKeyStrategy({
+      apiKey: env.WIX_API_KEY,
+      siteId: env.NEXT_PUBLIC_WIX_SITE_ID,
+    }),
+  });
+
+  return wixClient;
+});

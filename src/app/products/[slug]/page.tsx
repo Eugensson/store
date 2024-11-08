@@ -1,15 +1,24 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { products } from "@wix/stores";
 import { notFound } from "next/navigation";
+
+import { Product } from "@/components/product";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CreateProductReviewButton } from "@/components/reviews/create-product-review-button";
+
+import {
+  ProductReviews,
+  ProductReviewsLoadingSkeleton,
+} from "@/app/products/[slug]/product-reviews";
+import { ProductDetails } from "@/app/products/[slug]/product-details";
 
 import { delay } from "@/lib/utils";
 import { getWixServerClient } from "@/lib/wix-client.server";
 
-import { ProductDetails } from "@/app/products/[slug]/product-details";
-
+import { getLoggedInMember } from "@/wix-api/members";
+import { getProductReviews } from "@/wix-api/reviews";
 import { getProductBySlug, getRelatedProducts } from "@/wix-api/products";
-import { Product } from "@/components/product";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductDetailsPageProps {
   params: {
@@ -18,9 +27,8 @@ interface ProductDetailsPageProps {
 }
 
 export const generateMetadata = async ({
-  params,
+  params: { slug },
 }: ProductDetailsPageProps): Promise<Metadata> => {
-  const { slug } = await params;
   const wixServerClient = await getWixServerClient();
 
   const product = await getProductBySlug(wixServerClient, slug);
@@ -47,9 +55,9 @@ export const generateMetadata = async ({
   };
 };
 
-const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
-  const { slug } = await params;
-
+const ProductDetailsPage = async ({
+  params: { slug },
+}: ProductDetailsPageProps) => {
   const wixServerClient = await getWixServerClient();
 
   const product = await getProductBySlug(wixServerClient, slug);
@@ -63,6 +71,13 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
       <Suspense fallback={<RelatedProductsLoadingSkeleton />}>
         <RelatedProducts productId={product._id} />
       </Suspense>
+      <hr />
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Buyer reviews</h2>
+        <Suspense fallback={<ProductReviewsLoadingSkeleton />}>
+          <ProductReviewsSection product={product} />
+        </Suspense>
+      </div>
     </main>
   );
 };
@@ -102,6 +117,40 @@ const RelatedProductsLoadingSkeleton = () => {
       {Array.from({ length: 4 }).map((_, i) => (
         <Skeleton key={i} className="h-[26rem] w-full" />
       ))}
+    </div>
+  );
+};
+
+interface ProductReviewsSectionProps {
+  product: products.Product;
+}
+
+const ProductReviewsSection = async ({
+  product,
+}: ProductReviewsSectionProps) => {
+  if (!product._id) return null;
+
+  const wixClient = getWixServerClient();
+
+  const loggedInMember = await getLoggedInMember(wixClient);
+
+  const existingReview = loggedInMember?.contactId
+    ? (
+        await getProductReviews(wixClient, {
+          productId: product._id,
+          contactId: loggedInMember.contactId,
+        })
+      ).items[0]
+    : null;
+
+  return (
+    <div className="space-y-5">
+      <CreateProductReviewButton
+        product={product}
+        loggedInMember={loggedInMember}
+        hasExistingReview={!!existingReview}
+      />
+      <ProductReviews product={product} />
     </div>
   );
 };

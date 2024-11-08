@@ -5,11 +5,11 @@ import { env } from "@/env";
 
 import { WIX_SESSION_COOKIE } from "@/lib/constants";
 
-const wixClient = createClient({
-  auth: OAuthStrategy({ clientId: env.NEXT_PUBLIC_WIX_CLIENT_ID }),
-});
-
 export const middleware = async (request: NextRequest) => {
+  const wixClient = createClient({
+    auth: OAuthStrategy({ clientId: env.NEXT_PUBLIC_WIX_CLIENT_ID }),
+  });
+
   const cookies = request.cookies;
   const sessionCookie = cookies.get(WIX_SESSION_COOKIE);
 

@@ -24,23 +24,23 @@ interface ShopPageProps {
 }
 
 export const generateMetadata = async ({
-  searchParams,
+  searchParams: { q },
 }: ShopPageProps): Promise<Metadata> => {
-  const { q } = await searchParams;
   return {
     title: q ? `Results for "${q}"` : "Products",
   };
 };
 
-const ShopPage = async ({ searchParams }: ShopPageProps) => {
-  const {
+const ShopPage = async ({
+  searchParams: {
     q,
     page = "1",
     collection: collectionIds,
     price_min,
     price_max,
     sort,
-  } = await searchParams;
+  },
+}: ShopPageProps) => {
   const title = q ? `Results for "${q}"` : "Products";
 
   return (

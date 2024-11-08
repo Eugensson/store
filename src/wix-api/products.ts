@@ -85,6 +85,14 @@ export const getProductBySlug = cache(
   }
 );
 
+export const getProductById = async (
+  wixClient: WixClient,
+  productId: string
+) => {
+  const result = await wixClient.products.getProduct(productId);
+  return result.product;
+};
+
 export const getRelatedProducts = async (
   wixClient: WixClient,
   productId: string
