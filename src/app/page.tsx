@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { ArrowRight } from "lucide-react";
 
 import banner from "@/assets/banner.jpg";
-import { Product } from "@/components/product";
+import { Product } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
