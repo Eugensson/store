@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { WixImage } from "@/components/wix-image";
 import { DiscountBadge } from "@/components/discount-badge";
 
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formattedPrice } from "@/lib/utils";
 
 interface ProductProps {
   product: products.Product;
@@ -28,7 +28,7 @@ export const Product = ({ product }: ProductProps) => {
           {product.ribbon && <Badge>{product.ribbon}</Badge>}
           {product.discount && <DiscountBadge data={product.discount} />}
           <Badge className="bg-secondary text-secondary-foreground font-semibold">
-            {getFormattedPrice(product)}
+            {formattedPrice(product)}
           </Badge>
         </div>
       </div>
@@ -42,19 +42,4 @@ export const Product = ({ product }: ProductProps) => {
       </div>
     </Link>
   );
-};
-
-export const getFormattedPrice = (product: products.Product) => {
-  const minPrice = product.priceRange?.minValue;
-  const maxPrice = product.priceRange?.maxValue;
-
-  if (minPrice || maxPrice || minPrice !== maxPrice) {
-    return `from ${formatCurrency(minPrice, product.priceData?.currency)}`;
-  } else {
-    return (
-      product.priceData?.formatted?.discountedPrice ||
-      product.priceData?.formatted?.price ||
-      "n/a"
-    );
-  }
 };

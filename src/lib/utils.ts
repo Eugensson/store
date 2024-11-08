@@ -11,6 +11,21 @@ export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
 
+export const formattedPrice = (product: products.Product) => {
+  const minPrice = product.priceRange?.minValue;
+  const maxPrice = product.priceRange?.maxValue;
+
+  if (minPrice || maxPrice || minPrice !== maxPrice) {
+    return `from ${formatCurrency(minPrice, product.priceData?.currency)}`;
+  } else {
+    return (
+      product.priceData?.formatted?.discountedPrice ||
+      product.priceData?.formatted?.price ||
+      "n/a"
+    );
+  }
+};
+
 export const formatCurrency = (
   price: number | string = 0,
   currency: string = "USD"
